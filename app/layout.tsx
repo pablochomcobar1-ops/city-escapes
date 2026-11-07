@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Manrope } from "next/font/google";
+import { ThemeScript } from "@/components/theme/ThemeScript";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -37,8 +39,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="en"
       data-theme="night"
       className={`${cormorant.variable} ${manrope.variable}`}
+      suppressHydrationWarning
     >
-      <body>{children}</body>
+      <head>
+        <ThemeScript />
+      </head>
+      <body>
+        {/* Temporary placement: moves into the Nav in Task 3 */}
+        <div className="fixed right-gutter top-6 z-50">
+          <ThemeToggle />
+        </div>
+        {children}
+      </body>
     </html>
   );
 }
