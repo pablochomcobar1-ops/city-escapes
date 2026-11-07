@@ -1,7 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Manrope } from "next/font/google";
 import { ThemeScript } from "@/components/theme/ThemeScript";
-import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { Nav } from "@/components/layout/Nav";
+import { Footer } from "@/components/layout/Footer";
+import { Grain } from "@/components/motion/Grain";
+import { CursorRing } from "@/components/motion/CursorRing";
+import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -44,12 +48,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <ThemeScript />
       </head>
-      <body>
-        {/* Temporary placement: moves into the Nav in Task 3 */}
-        <div className="fixed right-gutter top-6 z-50">
-          <ThemeToggle />
-        </div>
-        {children}
+      <body id="top">
+        <SmoothScroll />
+        <Nav />
+        <main id="main">{children}</main>
+        <Footer />
+        <Grain />
+        <CursorRing />
       </body>
     </html>
   );

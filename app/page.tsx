@@ -11,7 +11,7 @@ const swatches = [
 
 export default function Home() {
   return (
-    <main className="mx-auto max-w-site px-gutter py-section">
+    <div className="mx-auto max-w-site px-gutter pb-section pt-40">
       <p className="text-caption02 uppercase tracking-[0.18em] text-foreground-subtle">
         01 / Design tokens
       </p>
@@ -32,6 +32,8 @@ export default function Home() {
           </li>
         ))}
       </ul>
-    </main>
+      {/* tall spacer so the nav hide/show and footer can be tried until Task 5 */}
+      <div className="h-[120vh]" aria-hidden="true" />
+    </div>
   );
 }

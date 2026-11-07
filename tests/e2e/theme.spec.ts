@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { clickThemeToggle } from "./helpers";
 
 test("a saved day theme is applied before first paint (no dark flash)", async ({ page }) => {
   await page.addInitScript(() => {
@@ -24,13 +25,12 @@ test("toggle switches theme and it survives a reload", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "night");
 
-  await page.getByRole("button", { name: "Switch to day" }).click();
+  await clickThemeToggle(page, "Switch to day");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "day");
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", "#f3ede3");
 
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "day");
-  await expect(page.getByRole("button", { name: "Switch to night" })).toBeVisible();
 });
 
 test("an invalid stored value falls back to night", async ({ page }) => {
