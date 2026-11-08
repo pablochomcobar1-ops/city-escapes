@@ -2,14 +2,14 @@
 
 ## Where we are
 - Stage 1 Brief ✅ · Stage 2 Look ✅ (Linen Noir + Golden Hour scroll, day = light linen theme) · Stage 3 Plan ✅
-- Stage 4 Build: Tasks 1–7 ✅ (scaffold, theme, layout shell, light-leak shader, hero, towers day/night, dawn→dusk story). **Next: Task 8, home lower sections (residences, step inside, materials, progress, CTA band).**
+- Stage 4 Build: Tasks 1–8 ✅ (home page complete: hero, intro, towers, story, residences, step inside, materials, progress, CTA). **Next: Task 9, About page.**
 - Plan: `docs/superpowers/plans/2026-11-07-city-escapes-site.md` (12 tasks)
 - Media: `public/media` is done (15 photos WebP, 5 videos MP4 + posters, watermarks cropped)
 
 ## Decisions to remember
 - WhatsApp number: placeholder in `.env.example`; real number goes in `.env.local` (never committed)
 - Possession date on timeline: Dec 2028
-- Still missing assets: `residence-4bhk`, `about-architecture` (placeholders until supplied)
+- Still missing assets: `residence-4bhk` (uses hero-night-poster for now, see lib/home.ts), `about-architecture`
 - Day→night switch is a code wipe (night photo over blue hour, bottom-up); tower photos re-cropped to one shared frame
 - Tests run on port 3005 with a fresh build each time; `npm run dev` stays on 3000
 

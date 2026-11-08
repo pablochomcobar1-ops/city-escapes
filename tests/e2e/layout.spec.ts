@@ -2,6 +2,9 @@ import { test, expect } from "@playwright/test";
 
 test("nav hides on scroll down and returns on scroll up", async ({ page }) => {
   await page.goto("/");
+  // Wait until the app is interactive (Lenis starts after hydration), or the
+  // scroll can happen before the nav's listener exists.
+  await page.waitForFunction(() => "__lenis" in window);
   const header = page.locator("header");
   await page.mouse.wheel(0, 1200);
   await expect(header).toHaveClass(/-translate-y-full/);

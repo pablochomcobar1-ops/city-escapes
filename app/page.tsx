@@ -1,18 +1,25 @@
 import { Hero } from "@/components/home/Hero";
+import { Intro } from "@/components/home/Intro";
 import { Towers } from "@/components/home/Towers";
 import { DawnToDusk } from "@/components/home/DawnToDusk";
+import { Residences } from "@/components/home/Residences";
+import { StepInside } from "@/components/home/StepInside";
+import { Materials } from "@/components/home/Materials";
+import { Progress } from "@/components/home/Progress";
+import { CtaBand } from "@/components/home/CtaBand";
 
 export default function Home() {
   return (
     <>
       <Hero />
+      <Intro />
       <Towers />
       <DawnToDusk />
-      {/* Sections arrive in Task 8. Spacer keeps scrolling testable meanwhile. */}
-      <section id="residences" aria-label="Coming next" className="mx-auto max-w-site px-gutter py-section">
-        <p className="text-caption02 uppercase tracking-[0.18em] text-foreground-subtle">04 / Coming in Task 8</p>
-        <div className="h-[60vh]" aria-hidden="true" />
-      </section>
+      <Residences />
+      <StepInside />
+      <Materials />
+      <Progress />
+      <CtaBand />
     </>
   );
 }

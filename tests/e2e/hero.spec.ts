@@ -38,7 +38,7 @@ test("reduced motion: poster only, no video", async ({ browser }) => {
   const page = await ctx.newPage();
   await page.goto("/");
   await expect(page.locator("video")).toHaveCount(0);
-  await expect(page.locator('img[src*="hero-night-poster"]')).toBeVisible();
+  await expect(page.locator('section[aria-label="Introduction"] img[src*="hero-night-poster"]')).toBeVisible();
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   await ctx.close();
 });

@@ -170,6 +170,26 @@
   }
 }
 
+/* Reveal on scroll: hidden start state only with JS on and motion allowed */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-reveal="text"]:not([data-shown]) {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  [data-reveal="image"]:not([data-shown]) {
+    clip-path: inset(0 0 100% 0);
+  }
+}
+[data-reveal="text"] {
+  transition:
+    opacity 900ms var(--ease-luxe),
+    transform 900ms var(--ease-luxe);
+}
+[data-reveal="image"] {
+  transition: clip-path 1200ms var(--ease-luxe);
+  clip-path: inset(0 0 0 0);
+}
+
 /* Lenis */
 html.lenis,
 html.lenis body {
