@@ -2,7 +2,7 @@
 
 ## Where we are
 - Stage 1 Brief ✅ · Stage 2 Look ✅ (Linen Noir + Golden Hour scroll, day = light linen theme) · Stage 3 Plan ✅
-- Stage 4 Build: Tasks 1–5 ✅ (scaffold, theme, layout shell, light-leak shader, hero). **Next: Task 6, towers day/night.** (GSAP gets installed in Task 6; the hero headline uses pure CSS.)
+- Stage 4 Build: Tasks 1–6 ✅ (scaffold, theme, layout shell, light-leak shader, hero, towers day/night). **Next: Task 7, Dawn → Dusk pinned story.**
 - Plan: `docs/superpowers/plans/2026-11-07-city-escapes-site.md` (12 tasks)
 - Media: `public/media` is done (15 photos WebP, 5 videos MP4 + posters, watermarks cropped)
 
@@ -13,7 +13,9 @@
 - The lights-on clip is lit from frame 1, so the day→night switch is a code wipe (night photo over blue hour, bottom-up); the clip is the night loop
 - Tests run on port 3005 with a fresh build each time; `npm run dev` stays on 3000
 
-## Lessons from Tasks 1–3
+## Lessons so far
+- Use gsap.matchMedia for reduced motion (useGSAP dependencies do not revert old animations)
+- Day hero uses a scrim only behind text (a full linen wash looked foggy)
 - Never call hooks inside `&&` (React #310 crash)
 - Fixed panels inside the transformed header need a portal to `<body>`
 - Kill `next-server` processes between runs on my side
