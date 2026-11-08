@@ -2,11 +2,12 @@
 
 import { useEffect, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import { PointerLockControls } from "@react-three/drei";
 import * as THREE from "three";
 import { EYE, roomAt, roomById, type RoomId } from "@/lib/flat-layout";
 import { clampToFlat, doorPoint, nextHotspot } from "@/lib/collision";
-import { tour } from "@/lib/tourStore";
+import { isWalkAttempt, tour } from "@/lib/tourStore";
+
+const LOOK = 0.0022; // radians per pixel of mouse movement
 
 const SPEED = 2.2; // m/s
 const LEG_S = 1.4; // seconds per glide leg
@@ -48,7 +49,7 @@ function buildLegs(cam: THREE.Camera, from: RoomId, to: RoomId): Leg[] {
   return legs;
 }
 
-export function Player({ fine }: { fine: boolean }) {
+export function Player(_: { fine: boolean }) {
   const { camera, gl } = useThree();
   const keys = useRef<Record<string, boolean>>({});
   const legs = useRef<Leg[]>([]);
@@ -77,6 +78,45 @@ export function Player({ fine }: { fine: boolean }) {
       window.removeEventListener("keyup", up);
     };
   }, []);
+
+  // Desktop walk mode: our own pointer-lock handling (no drei PointerLockControls — its
+  // `selector` only binds to elements present at mount, and our start button appears later).
+  useEffect(() => {
+    const el = gl.domElement;
+    el.dataset.tour = "";
+    if (new URLSearchParams(window.location.search).has("debug")) {
+      (window as unknown as { __ceCam?: THREE.Camera; __ceGl?: unknown }).__ceCam = camera;
+      (window as unknown as { __ceGl?: unknown }).__ceGl = gl;
+    }
+    const onChange = () => {
+      const locked = document.pointerLockElement === el;
+      if (!locked) keys.current = {};
+      tour.set({ locked, lockHint: false });
+    };
+    // Errors during requestWalk are handled there (its first attempt may fail by design).
+    const onError = () => {
+      if (!isWalkAttempt()) tour.set({ lockHint: true });
+    };
+    const onMove = (e: MouseEvent) => {
+      if (document.pointerLockElement !== el || legs.current.length) return;
+      // Chrome can report one huge jump right after the lock engages (and on some
+      // Windows setups); ignore implausible spikes so the view doesn't spin.
+      if (Math.abs(e.movementX) > 150 || Math.abs(e.movementY) > 150) return;
+      euler.current.setFromQuaternion(camera.quaternion);
+      euler.current.y -= e.movementX * LOOK;
+      euler.current.x = THREE.MathUtils.clamp(euler.current.x - e.movementY * LOOK, -1.3, 1.3);
+      camera.quaternion.setFromEuler(euler.current);
+    };
+    document.addEventListener("pointerlockchange", onChange);
+    document.addEventListener("pointerlockerror", onError);
+    document.addEventListener("mousemove", onMove);
+    return () => {
+      document.removeEventListener("pointerlockchange", onChange);
+      document.removeEventListener("pointerlockerror", onError);
+      document.removeEventListener("mousemove", onMove);
+      if (document.pointerLockElement === el) document.exitPointerLock();
+    };
+  }, [camera, gl]);
 
   // Touch / pen: drag to look (desktop uses pointer lock instead).
   useEffect(() => {
@@ -158,14 +198,5 @@ export function Player({ fine }: { fine: boolean }) {
     if (room && room !== s.room) tour.set({ room });
   });
 
-  return fine ? (
-    <PointerLockControls
-      selector="#tour-start"
-      onLock={() => tour.set({ locked: true })}
-      onUnlock={() => {
-        keys.current = {};
-        tour.set({ locked: false });
-      }}
-    />
-  ) : null;
+  return null;
 }

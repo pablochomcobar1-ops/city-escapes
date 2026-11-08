@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { FLAT, roomById } from "@/lib/flat-layout";
-import { tour, useTour } from "@/lib/tourStore";
+import { requestWalk, tour, useTour } from "@/lib/tourStore";
 
 const SHORT: Record<string, string> = { living: "Living", kitchen: "Kitchen", bedroom: "Bedroom", balcony: "Balcony" };
 
@@ -11,6 +11,7 @@ export function TourHud({ fine }: { fine: boolean }) {
   const locked = useTour((s) => s.locked);
   const ready = useTour((s) => s.ready);
   const moving = useTour((s) => s.target !== null);
+  const lockHint = useTour((s) => s.lockHint);
   // No 3D imports here: this file is in the /tour route chunk, which Next prefetches
   // from the home page. Progress comes from inside the lazily loaded canvas.
   const progress = useTour((s) => s.progress);
@@ -70,10 +71,16 @@ export function TourHud({ fine }: { fine: boolean }) {
           <button
             id="tour-start"
             type="button"
+            onClick={() => void requestWalk()}
             className="group flex flex-col items-center gap-3 rounded-pill bg-black/45 px-8 py-5 text-[#ede6da] backdrop-blur-md transition-colors hover:bg-black/60"
           >
             <span className="font-display text-heading02">Click to step inside</span>
             <span className="text-caption01 text-[#ede6da]/75">W A S D to walk · mouse to look · Esc to pause</span>
+            {lockHint && (
+              <span role="status" className="text-caption01 text-[#d4b483]">
+                Your browser needs one more click. Click again to look around.
+              </span>
+            )}
           </button>
         </div>
       )}

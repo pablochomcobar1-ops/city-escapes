@@ -51,6 +51,40 @@ test.describe("3D tour", () => {
     await expect(page.locator('nav[aria-label="Rooms"] button[disabled]')).toHaveCount(0, { timeout: 60_000 });
   });
 
+  test("click to step inside captures the mouse, W walks forward, and it works again after release", async ({ page }) => {
+    await page.goto("/tour?debug=1");
+    await ready(page);
+    const start = page.getByRole("button", { name: /Click to step inside/ });
+    const cam = () =>
+      page.evaluate(() => {
+        const c = (window as unknown as { __ceCam: { position: { x: number; z: number } } }).__ceCam;
+        return { x: c.position.x, z: c.position.z };
+      });
+
+    test.setTimeout(300_000); // software WebGL is ~1 fps here
+    const locked = () => page.evaluate(() => !!document.pointerLockElement);
+
+    await start.click();
+    await expect.poll(locked, { timeout: 30_000 }).toBe(true);
+    await expect(start).toBeHidden({ timeout: 30_000 });
+    await expect(page.getByText(/Click again to look around/)).toHaveCount(0);
+
+    const before = await cam();
+    await page.keyboard.down("KeyW");
+    await page.waitForTimeout(4000);
+    await page.keyboard.up("KeyW");
+    const after = await cam();
+    expect(after.z).toBeLessThan(before.z - 0.05); // forward = towards the north glass (−z)
+    expect(Math.abs(after.x - before.x)).toBeLessThan(0.05); // straight, no spin
+
+    // Release (what Esc does), then the same button must work again: the original bug.
+    await page.evaluate(() => document.exitPointerLock());
+    await expect(start).toBeVisible({ timeout: 30_000 });
+    await page.waitForTimeout(1500); // Chrome's re-lock cooldown
+    await start.click();
+    await expect.poll(locked, { timeout: 30_000 }).toBe(true);
+  });
+
   test("on a phone: drag/tap hint instead of the WASD prompt", async ({ browser }) => {
     const ctx = await browser.newContext({ ...devices["Pixel 7"] });
     const page = await ctx.newPage();

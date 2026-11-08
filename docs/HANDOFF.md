@@ -14,6 +14,7 @@
 - Tests run on port 3005 with a fresh build each time; `npm run dev` stays on 3000
 
 ## Lessons so far
+- Pointer lock: no drei PointerLockControls (its `selector` binds only to elements present at mount). requestWalk() in lib/tourStore locks the canvas from the button click; ignore >150px mouse spikes; first unadjustedMovement attempt may fail by design
 - 3D tour is all code (Kenney/Poly Haven downloads blocked): procedural furniture, own material photos as textures, code sky + city with lit-window texture
 - Never import three/drei in files the /tour route chunk includes (HUD, page): Next prefetches /tour from the home page. Progress is reported via lib/tourStore from inside the dynamic TourCanvas
 - Glides are clock-timed (not frame-counted); walking keeps clamped dt for collision safety
