@@ -2,7 +2,7 @@
 
 ## Where we are
 - Stage 1 Brief ✅ · Stage 2 Look ✅ (Linen Noir + Golden Hour scroll, day = light linen theme) · Stage 3 Plan ✅
-- Stage 4 Build: Tasks 1–6 ✅ (scaffold, theme, layout shell, light-leak shader, hero, towers day/night). **Next: Task 7, Dawn → Dusk pinned story.**
+- Stage 4 Build: Tasks 1–7 ✅ (scaffold, theme, layout shell, light-leak shader, hero, towers day/night, dawn→dusk story). **Next: Task 8, home lower sections (residences, step inside, materials, progress, CTA band).**
 - Plan: `docs/superpowers/plans/2026-11-07-city-escapes-site.md` (12 tasks)
 - Media: `public/media` is done (15 photos WebP, 5 videos MP4 + posters, watermarks cropped)
 
