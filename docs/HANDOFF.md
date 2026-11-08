@@ -2,7 +2,7 @@
 
 ## Where we are
 - Stage 1 Brief ✅ · Stage 2 Look ✅ (Linen Noir + Golden Hour scroll, day = light linen theme) · Stage 3 Plan ✅
-- Stage 4 Build: Tasks 1–10 ✅ (home, About, Contact with zod-validated demo booking + WhatsApp). **Next: Task 11, the 3D walkthrough at /tour (biggest task).**
+- Stage 4 Build: Tasks 1–11 ✅ (home, About, Contact, 3D tour). **Next: Task 12, hardening (security headers/CSP, 404, robots, sitemap, audit).**
 - Plan: `docs/superpowers/plans/2026-11-07-city-escapes-site.md` (12 tasks)
 - Media: `public/media` is done (15 photos WebP, 5 videos MP4 + posters, watermarks cropped)
 
@@ -14,6 +14,10 @@
 - Tests run on port 3005 with a fresh build each time; `npm run dev` stays on 3000
 
 ## Lessons so far
+- 3D tour is all code (Kenney/Poly Haven downloads blocked): procedural furniture, own material photos as textures, code sky + city with lit-window texture
+- Never import three/drei in files the /tour route chunk includes (HUD, page): Next prefetches /tour from the home page. Progress is reported via lib/tourStore from inside the dynamic TourCanvas
+- Glides are clock-timed (not frame-counted); walking keeps clamped dt for collision safety
+- 3D e2e tests run serially on the desktop project (software WebGL ~1 fps; parallel 3D pages starve each other)
 - Never put clip-path on an IntersectionObserver target: Chrome counts it, a zero-height clip never 'intersects'. Clip the children.
 - CSS entrance animations use fill-mode `backwards`, not `both` (finished `both` animations keep GPU layers alive -> paint glitches)
 - Grain is a 128px PNG tile, not a live SVG feTurbulence filter
