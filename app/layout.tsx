@@ -7,6 +7,7 @@ import { Grain } from "@/components/motion/Grain";
 import { CursorRing } from "@/components/motion/CursorRing";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import { LightLeak } from "@/components/bg/LightLeak";
+import { SITE_URL } from "@/lib/siteUrl";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -24,14 +25,29 @@ const manrope = Manrope({
   display: "swap",
 });
 
+const DESCRIPTION =
+  "3 & 4 BHK residences on SG Highway, Ahmedabad. A concept project by Pablo Chomcobar.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "City Escapes · Your escape, within the city.",
     template: "%s · City Escapes",
   },
-  description:
-    "3 & 4 BHK residences on SG Highway, Ahmedabad. A concept project by Pablo Chomcobar.",
+  description: DESCRIPTION,
   authors: [{ name: "Pablo Chomcobar" }],
+  openGraph: {
+    type: "website",
+    siteName: "City Escapes",
+    title: "City Escapes · Your escape, within the city.",
+    description: DESCRIPTION,
+    locale: "en_IN",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "City Escapes · Your escape, within the city.",
+    description: DESCRIPTION,
+  },
 };
 
 export const viewport: Viewport = {

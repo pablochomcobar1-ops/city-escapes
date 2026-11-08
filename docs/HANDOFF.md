@@ -2,7 +2,8 @@
 
 ## Where we are
 - Stage 1 Brief ✅ · Stage 2 Look ✅ (Linen Noir + Golden Hour scroll, day = light linen theme) · Stage 3 Plan ✅
-- Stage 4 Build: Tasks 1–11 ✅ (home, About, Contact, 3D tour). **Next: Task 12, hardening (security headers/CSP, 404, robots, sitemap, audit).**
+- Stage 4 Build: Tasks 1–12 ✅ (home, About, Contact, 3D tour, hardening). **Next: Stage 5, security checklist (ask the user first).**
+- Task 12: CSP + HSTS + nosniff + DENY framing + Permissions-Policy in `next.config.ts`; styled 404; robots/sitemap from `lib/siteUrl.ts`; share image `app/opengraph-image.jpg` (made by a script from hero-night, 100 KB); `npm audit --omit=dev` = 0. Tests: 69 unit, 105 e2e passed (9 skipped).
 - Plan: `docs/superpowers/plans/2026-11-07-city-escapes-site.md` (12 tasks)
 - Media: `public/media` is done (15 photos WebP, 5 videos MP4 + posters, watermarks cropped)
 
@@ -30,6 +31,9 @@
 - Never call hooks inside `&&` (React #310 crash)
 - Fixed panels inside the transformed header need a portal to `<body>`
 - Kill `next-server` processes between runs on my side
+
+- CSP: test with the `securitypolicyviolation` event plus console text; verified it catches a deliberately blocked script. `'unsafe-inline'` scripts stay because Next's static pages inline their payload (nonces would force dynamic rendering).
+- Share images: keep under ~300 KB (WhatsApp), so JPEG not PNG.
 
 ## Workflow
 Each task: a zip of the changed files → extract over the folder → `npm install` if package.json changed → `git add . && git commit -m "..." && git push`
