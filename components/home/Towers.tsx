@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useTheme } from "@/components/theme/useTheme";
-import { useReducedMotion } from "@/lib/useReducedMotion";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { CountUp } from "@/components/motion/CountUp";
 
@@ -14,9 +13,9 @@ const SIZES = "(min-width: 1440px) 1344px, 100vw";
  * Day ⇄ night is a CSS state machine driven by html[data-theme]. Each layer's
  * transition timing differs per direction:
  *   → night: blue hour fades in (0.6 s), then the night photo wipes up from the
- *            bottom (1.6 s, starts at 0.5 s) so floors light up bottom-up, then the
- *            night loop video fades in (after 2.1 s).
- *   → day:   blue hour, night and video all fade out together (0.8 s).
+ *            bottom (1.6 s, starts at 0.5 s) so floors light up bottom-up.
+ *   → day:   blue hour and night fade out together (0.8 s).
+ * (A night loop video was tried and removed: the AI clip "boils", which reads as shaking.)
  * No JS decides what is visible, so the first paint is always right.
  */
 const L_BLUE = [
@@ -32,31 +31,25 @@ const L_NIGHT = [
 
 export function Towers() {
   const { theme, toggle } = useTheme();
-  const reduced = useReducedMotion();
   const section = useRef<HTMLElement>(null);
   const frame = useRef<HTMLDivElement>(null);
-  const video = useRef<HTMLVideoElement>(null);
-  const [inView, setInView] = useState(false);
-  const [wantVideo, setWantVideo] = useState(false);
-  const [playing, setPlaying] = useState(false);
 
   const isNight = theme === "night";
-  if (isNight && inView && !reduced && !wantVideo) setWantVideo(true);
 
+  // Reveal the stack only once every layer is decoded, so a night visitor never sees
+  // the day photo flash underneath while the night photo is still decoding.
+  const [decoded, setDecoded] = useState(0);
+  const ready = decoded >= 3;
+  const onLayerLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = e.currentTarget;
+    (img.decode?.() ?? Promise.resolve())
+      .catch(() => {})
+      .finally(() => setDecoded((n) => n + 1));
+  };
   useEffect(() => {
-    const el = frame.current;
-    if (!el || typeof IntersectionObserver === "undefined") return;
-    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { rootMargin: "200px" });
-    io.observe(el);
-    return () => io.disconnect();
+    const t = setTimeout(() => setDecoded(3), 3000); // safety net: never stay hidden
+    return () => clearTimeout(t);
   }, []);
-
-  useEffect(() => {
-    const v = video.current;
-    if (!v) return;
-    if (isNight && inView) v.play()?.catch(() => {});
-    else v.pause();
-  }, [isNight, inView, wantVideo]);
 
   // Slow settle: the photo eases from 1.15× to 1× as the section scrolls through.
   // gsap.matchMedia runs only when motion is allowed, and reverts itself if that changes.
@@ -114,7 +107,11 @@ export function Towers() {
           data-testid="towers-frame"
           className="relative mt-14 aspect-[4/5] overflow-hidden bg-background-secondary sm:aspect-[16/10] lg:aspect-[16/9]"
         >
-          <div data-zoom className="absolute inset-0 will-change-transform">
+          <div
+            data-zoom
+            data-ready={ready}
+            className={`absolute inset-0 will-change-transform transition-opacity duration-700 ease-cinema ${ready ? "opacity-100" : "opacity-0"}`}
+          >
             <Image
               src={`${M}/images/towers-day.webp`}
               alt="City Escapes, two stone towers on SG Highway in morning light"
@@ -122,6 +119,7 @@ export function Towers() {
               sizes={SIZES}
               className="object-cover"
               data-layer="day"
+              onLoad={onLayerLoad}
             />
             <Image
               src={`${M}/images/towers-bluehour.webp`}
@@ -130,6 +128,7 @@ export function Towers() {
               sizes={SIZES}
               className={`object-cover ${L_BLUE}`}
               data-layer="bluehour"
+              onLoad={onLayerLoad}
             />
             <Image
               src={`${M}/images/towers-night.webp`}
@@ -138,27 +137,8 @@ export function Towers() {
               sizes={SIZES}
               className={`object-cover ${L_NIGHT}`}
               data-layer="night"
+              onLoad={onLayerLoad}
             />
-            {wantVideo && (
-              <video
-                ref={video}
-                src={`${M}/video/towers-lights-on.mp4`}
-                poster={`${M}/video/towers-lights-on-poster.webp`}
-                muted
-                loop
-                playsInline
-                preload="auto"
-                aria-hidden="true"
-                tabIndex={-1}
-                onPlaying={() => setPlaying(true)}
-                data-layer="night-loop"
-                className={[
-                  "absolute inset-0 h-full w-full object-cover",
-                  "[transition:opacity_900ms_var(--ease-cinema)_2100ms] day:[transition:opacity_800ms_var(--ease-cinema)]",
-                  isNight && playing ? "opacity-100" : "opacity-0",
-                ].join(" ")}
-              />
-            )}
           </div>
           <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/35 to-transparent" />
         </div>

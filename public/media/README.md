@@ -5,5 +5,5 @@ Footer credit on the site: "Concept project. Visuals generated with AI."
 images/  WebP, 2400px wide (squares/portrait 1600px). next/image makes the smaller sizes.
 video/   H.264 MP4, muted, no audio track, faststart; each has a -poster.webp (first frame).
 
-Day/Night pairs: hero-day / hero-night · towers-day / towers-bluehour / towers-night
+Day/Night pairs: hero-day / hero-night · towers-day / towers-bluehour / towers-night (night loop clip removed: AI shimmer)
 Still missing: residence-4bhk, about-architecture (placeholders used until supplied)
