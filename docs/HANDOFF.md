@@ -2,12 +2,12 @@
 
 ## Where we are
 - Stage 1 Brief ✅ · Stage 2 Look ✅ (Linen Noir + Golden Hour scroll, day = light linen theme) · Stage 3 Plan ✅
-- Stage 4 Build: Tasks 1–9 ✅ (home page + About page). **Next: Task 10, Contact page + booking form (demo success, WhatsApp link).**
+- Stage 4 Build: Tasks 1–10 ✅ (home, About, Contact with zod-validated demo booking + WhatsApp). **Next: Task 11, the 3D walkthrough at /tour (biggest task).**
 - Plan: `docs/superpowers/plans/2026-11-07-city-escapes-site.md` (12 tasks)
 - Media: `public/media` is done (15 photos WebP, 5 videos MP4 + posters, watermarks cropped)
 
 ## Decisions to remember
-- WhatsApp number: placeholder in `.env.example`; real number goes in `.env.local` (never committed)
+- WhatsApp number: placeholder in `.env.example`; real number goes in `.env.local` (never committed). Without a number the button opens WhatsApp's share picker (wa.me/?text=)
 - Possession date on timeline: Dec 2028
 - Still missing assets: `residence-4bhk` (uses hero-night-poster for now, see lib/home.ts), `about-architecture` (About uses towers-day for now)
 - Day→night switch is a code wipe (night photo over blue hour, bottom-up); tower photos re-cropped to one shared frame
