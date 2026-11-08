@@ -11,7 +11,8 @@ export function Hero() {
   return (
     <section aria-label="Introduction" className="relative h-[100svh] min-h-[620px] overflow-hidden">
       {/* Posters: chosen by CSS (theme + screen shape), so the first paint is always right */}
-      <div className="absolute inset-0" aria-hidden="true">
+      {/* A little extra contrast by day so the bright clip reads crisp, not hazy */}
+      <div className="absolute inset-0 day:contrast-[1.1] day:saturate-[1.08]" aria-hidden="true">
         <picture className="absolute inset-0 opacity-100 transition-opacity duration-1000 ease-cinema day:opacity-0">
           <source media={PORTRAIT_QUERY} srcSet={`${V}/hero-night-vertical-poster.webp`} />
           <img
@@ -30,14 +31,24 @@ export function Hero() {
         <HeroVideo />
       </div>
 
-      {/* Scrims: keep the headline readable on any frame */}
+      {/* Scrims: keep the headline readable on any frame.
+          Night: a full dark wash. Day: only behind the text — a full linen wash on a
+          bright clip looks foggy. */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-background/10"
+        className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-background/10 day:hidden"
       />
       <div
         aria-hidden="true"
-        className="absolute inset-y-0 left-0 w-full bg-gradient-to-r from-background/55 to-transparent md:w-2/3"
+        className="absolute inset-0 hidden bg-gradient-to-t from-background from-5% via-background/70 via-35% to-transparent to-75% day:block"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 hidden h-36 bg-gradient-to-b from-background/70 to-transparent day:block"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-y-0 left-0 w-full bg-gradient-to-r from-background/55 to-transparent md:w-2/3 day:from-background/30 day:md:w-1/2"
       />
 
       <div className="relative mx-auto flex h-full max-w-site flex-col justify-end px-gutter pb-16 md:pb-20">
