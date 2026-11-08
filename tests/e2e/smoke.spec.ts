@@ -5,14 +5,14 @@ test("home loads with night tokens, and day tokens switch on data-theme", async 
   expect(res?.status()).toBe(200);
 
   const bg = () =>
-    page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+    page.evaluate(() => getComputedStyle(document.documentElement).backgroundColor);
 
   await expect(page.locator("html")).toHaveAttribute("data-theme", "night");
   expect(await bg()).toBe("rgb(14, 13, 11)");
 
   await page.evaluate(() => {
     document.documentElement.dataset.theme = "day";
-    document.body.style.transition = "none";
+    document.documentElement.style.transition = "none";
   });
   expect(await bg()).toBe("rgb(243, 237, 227)");
 });

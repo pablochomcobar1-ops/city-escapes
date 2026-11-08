@@ -104,10 +104,12 @@
 /* ---------- Base ---------- */
 @layer base {
   html {
-    background: var(--ce-bg);
+    background-color: var(--ce-bg);
+    transition: background-color 800ms var(--ease-cinema);
   }
+  /* Transparent so the fixed LightLeak canvas (z -10) shows through; html keeps the colour. */
   body {
-    background: var(--ce-bg);
+    background: transparent;
     color: var(--ce-fg);
     font-family: var(--font-sans);
     font-size: var(--text-body01);

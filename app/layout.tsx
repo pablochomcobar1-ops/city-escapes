@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Grain } from "@/components/motion/Grain";
 import { CursorRing } from "@/components/motion/CursorRing";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
+import { LightLeak } from "@/components/bg/LightLeak";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -49,6 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeScript />
       </head>
       <body id="top">
+        <LightLeak />
         <SmoothScroll />
         <Nav />
         <main id="main">{children}</main>
