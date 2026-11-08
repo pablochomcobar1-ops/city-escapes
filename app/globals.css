@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* `day:` and `night:` utilities, e.g. `opacity-100 day:opacity-0` */
+@custom-variant day (&:where([data-theme="day"], [data-theme="day"] *));
+@custom-variant night (&:where([data-theme="night"], [data-theme="night"] *));
+
 /* ---------- Theme values (night = default) ---------- */
 :root,
 [data-theme="night"] {
@@ -145,6 +149,24 @@
   to {
     opacity: 1;
     transform: none;
+  }
+}
+
+@keyframes ce-word {
+  from {
+    transform: translateY(110%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes ce-scroll {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(200%);
   }
 }
 
