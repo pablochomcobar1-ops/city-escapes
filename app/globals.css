@@ -170,14 +170,21 @@
   }
 }
 
-/* Reveal on scroll: hidden start state only with JS on and motion allowed */
+/* Reveal on scroll: hidden start state only with JS on and motion allowed.
+   Images: the clip goes on the frame's CHILDREN, never the observed frame itself —
+   Chrome's IntersectionObserver honours the target's own clip-path, so a frame clipped
+   to zero height would never count as visible and would never reveal. The mask is
+   removed once the reveal finishes. */
 @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
   [data-reveal="text"]:not([data-shown]) {
     opacity: 0;
     transform: translateY(24px);
   }
-  [data-reveal="image"]:not([data-shown]) {
+  [data-reveal="image"]:not([data-shown]) > * {
     clip-path: inset(0 0 100% 0);
+  }
+  [data-reveal="image"][data-shown]:not([data-done]) > * {
+    clip-path: inset(0 0 0 0);
   }
 }
 [data-reveal="text"] {
@@ -185,9 +192,8 @@
     opacity 900ms var(--ease-luxe),
     transform 900ms var(--ease-luxe);
 }
-[data-reveal="image"] {
+[data-reveal="image"] > * {
   transition: clip-path 1200ms var(--ease-luxe);
-  clip-path: inset(0 0 0 0);
 }
 
 /* Lenis */

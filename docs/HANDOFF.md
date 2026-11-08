@@ -2,18 +2,22 @@
 
 ## Where we are
 - Stage 1 Brief ✅ · Stage 2 Look ✅ (Linen Noir + Golden Hour scroll, day = light linen theme) · Stage 3 Plan ✅
-- Stage 4 Build: Tasks 1–8 ✅ (home page complete: hero, intro, towers, story, residences, step inside, materials, progress, CTA). **Next: Task 9, About page.**
+- Stage 4 Build: Tasks 1–9 ✅ (home page + About page). **Next: Task 10, Contact page + booking form (demo success, WhatsApp link).**
 - Plan: `docs/superpowers/plans/2026-11-07-city-escapes-site.md` (12 tasks)
 - Media: `public/media` is done (15 photos WebP, 5 videos MP4 + posters, watermarks cropped)
 
 ## Decisions to remember
 - WhatsApp number: placeholder in `.env.example`; real number goes in `.env.local` (never committed)
 - Possession date on timeline: Dec 2028
-- Still missing assets: `residence-4bhk` (uses hero-night-poster for now, see lib/home.ts), `about-architecture`
+- Still missing assets: `residence-4bhk` (uses hero-night-poster for now, see lib/home.ts), `about-architecture` (About uses towers-day for now)
 - Day→night switch is a code wipe (night photo over blue hour, bottom-up); tower photos re-cropped to one shared frame
 - Tests run on port 3005 with a fresh build each time; `npm run dev` stays on 3000
 
 ## Lessons so far
+- Never put clip-path on an IntersectionObserver target: Chrome counts it, a zero-height clip never 'intersects'. Clip the children.
+- CSS entrance animations use fill-mode `backwards`, not `both` (finished `both` animations keep GPU layers alive -> paint glitches)
+- Grain is a 128px PNG tile, not a live SVG feTurbulence filter
+- Screenshots: always test with motion ON too (reduced motion skips reveals and hides bugs)
 - Use gsap.matchMedia for reduced motion (useGSAP dependencies do not revert old animations)
 - Day hero uses a scrim only behind text (a full linen wash looked foggy)
 - Towers night loop video removed: AI clips 'boil' (shimmer), which reads as shaking; night is the still photo

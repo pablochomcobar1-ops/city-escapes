@@ -52,7 +52,7 @@ export function Hero() {
       />
 
       <div className="relative mx-auto flex h-full max-w-site flex-col justify-end px-gutter pb-16 md:pb-20">
-        <p className="animate-[ce-rise_900ms_var(--ease-luxe)_both] text-caption02 uppercase tracking-[0.18em] text-foreground-secondary">
+        <p className="animate-[ce-rise_900ms_var(--ease-luxe)_backwards] text-caption02 uppercase tracking-[0.18em] text-foreground-secondary">
           Residence 12A · Sample flat now open
         </p>
 
@@ -66,7 +66,7 @@ export function Hero() {
 
         <div
           className="mt-8 flex flex-col gap-6 md:flex-row md:items-end md:justify-between"
-          style={{ animation: "ce-rise 900ms var(--ease-luxe) 750ms both" }}
+          style={{ animation: "ce-rise 900ms var(--ease-luxe) 750ms backwards" }}
         >
           <p className="max-w-md text-body01 text-foreground-secondary">
             {FACTS.homes} on {FACTS.location}. Two quiet towers, light from three sides, and the city

@@ -22,7 +22,7 @@ export function SplitWords({
       {words.map((w, i) => (
         <span key={`${w}-${i}`} className="inline-block overflow-hidden pb-[0.12em] align-bottom">
           <span
-            className="inline-block animate-[ce-word_1100ms_var(--ease-luxe)_both]"
+            className="inline-block animate-[ce-word_1100ms_var(--ease-luxe)_backwards]"
             style={{ animationDelay: `${delay + (startIndex + i) * stagger}ms` }}
           >
             {w}

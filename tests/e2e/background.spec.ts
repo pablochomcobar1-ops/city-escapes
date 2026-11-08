@@ -19,7 +19,7 @@ test("shader canvas runs behind the page and switches palette with the theme", a
   // grain for the screenshot so only the html colour + shader are measured.
   const brightness = async () => {
     const vp = page.viewportSize()!;
-    await page.addStyleTag({ content: "header,main,footer,svg[aria-hidden]{visibility:hidden!important}" });
+    await page.addStyleTag({ content: "header,main,footer,[data-grain]{visibility:hidden!important}" });
     const png = await page.screenshot({ clip: { x: 0, y: vp.height * 0.5, width: vp.width, height: 40 } });
     await page.evaluate(() => document.head.lastElementChild?.remove());
     return page.evaluate(async (b64) => {
@@ -53,4 +53,13 @@ test("reduced motion: shader draws one still frame and stops", async ({ browser 
   await page.goto("/");
   await expect(page.locator("canvas[data-state]")).toHaveAttribute("data-state", "static");
   await ctx.close();
+});
+
+test("grain is a light static texture, not a live filter", async ({ page }) => {
+  await page.goto("/");
+  const grain = page.locator("[data-grain]");
+  await expect(grain).toHaveCSS("pointer-events", "none");
+  await expect(grain).toHaveCSS("background-image", /grain\.png/);
+  expect(Number(await grain.evaluate((el) => getComputedStyle(el).opacity))).toBeLessThan(0.1);
+  await expect(page.locator("feTurbulence")).toHaveCount(0);
 });

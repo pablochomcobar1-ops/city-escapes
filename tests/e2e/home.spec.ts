@@ -47,3 +47,24 @@ test("progress fill stops just past the current milestone (facade)", async ({ pa
   const style = await fill.getAttribute("style");
   expect(style).toMatch(/44%/);
 });
+
+test("revealed images drop their clip mask after the reveal", async ({ page }) => {
+  await page.goto("/");
+  const img = page.locator('#residences [data-reveal="image"]').first();
+  await img.scrollIntoViewIfNeeded();
+  await expect.poll(() => img.evaluate((el) => el.hasAttribute("data-done")), { timeout: 4000 }).toBe(true);
+  expect(await img.evaluate((el) => getComputedStyle(el.firstElementChild!).clipPath)).toBe("none");
+});
+
+test("every reveal image actually reveals when scrolled to (motion on)", async ({ page }) => {
+  await page.goto("/");
+  await page.waitForFunction(() => "__lenis" in window);
+  const frames = page.locator('[data-reveal="image"]');
+  const n = await frames.count();
+  expect(n).toBeGreaterThan(5);
+  for (let i = 0; i < n; i++) {
+    const f = frames.nth(i);
+    await f.scrollIntoViewIfNeeded();
+    await expect.poll(() => f.evaluate((el) => el.hasAttribute("data-shown")), { timeout: 3000 }).toBe(true);
+  }
+});

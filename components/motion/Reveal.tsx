@@ -27,6 +27,7 @@ export function Reveal({
     if (!el) return;
     if (typeof IntersectionObserver === "undefined") {
       el.dataset.shown = "";
+      el.dataset.done = "";
       return;
     }
     const io = new IntersectionObserver(
@@ -34,13 +35,15 @@ export function Reveal({
         if (e.isIntersecting) {
           el.dataset.shown = "";
           io.disconnect();
+          // Drop the image clip mask once the reveal has finished.
+          if (variant === "image") window.setTimeout(() => (el.dataset.done = ""), 1300 + delay);
         }
       },
       { rootMargin: "0px 0px -12% 0px" },
     );
     io.observe(el);
     return () => io.disconnect();
-  }, []);
+  }, [variant, delay]);
 
   return (
     <Tag

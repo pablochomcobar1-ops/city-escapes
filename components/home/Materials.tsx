@@ -2,12 +2,12 @@ import Image from "next/image";
 import { Reveal } from "@/components/motion/Reveal";
 import { MATERIALS, SPECS } from "@/lib/home";
 
-export function Materials() {
+export function Materials({ label = "06 / Built to last" }: { label?: string }) {
   return (
     <section aria-labelledby="materials-title" className="mx-auto max-w-site px-gutter py-section">
       <div className="grid gap-10 md:grid-cols-[1fr_1.2fr] md:items-end">
         <div>
-          <p className="text-caption02 uppercase tracking-[0.18em] text-foreground-subtle">06 / Built to last</p>
+          <p className="text-caption02 uppercase tracking-[0.18em] text-foreground-subtle">{label}</p>
           <h2 id="materials-title" className="mt-5 font-display text-heading01 text-foreground">
             Materials that <em className="text-brand">age well.</em>
           </h2>

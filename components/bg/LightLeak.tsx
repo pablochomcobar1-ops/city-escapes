@@ -33,7 +33,11 @@ export function LightLeak() {
     if (!el) return;
     let gl: WebGLRenderingContext | null = null;
     try {
-      gl = el.getContext("webgl", { antialias: false, alpha: false, powerPreference: "low-power" });
+      gl = el.getContext("webgl", {
+        antialias: false,
+        alpha: false,
+        powerPreference: "low-power",
+      });
     } catch {
       gl = null;
     }

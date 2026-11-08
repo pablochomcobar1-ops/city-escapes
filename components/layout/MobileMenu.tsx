@@ -83,7 +83,7 @@ export function MobileMenu({ onOpenChange }: { onOpenChange?: (open: boolean) =>
             {links.map((l, i) => (
               <li
                 key={l.href}
-                className="animate-[ce-rise_700ms_var(--ease-luxe)_both]"
+                className="animate-[ce-rise_700ms_var(--ease-luxe)_backwards]"
                 style={{ animationDelay: `${80 + i * 70}ms` }}
               >
                 <Link

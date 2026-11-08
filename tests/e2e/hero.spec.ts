@@ -47,7 +47,7 @@ test("headline words end fully revealed", async ({ page }) => {
   await page.goto("/");
   await page.waitForTimeout(1800);
   const transforms = await page
-    .locator("h1 .animate-\\[ce-word_1100ms_var\\(--ease-luxe\\)_both\\]")
+    .locator("h1 .animate-\\[ce-word_1100ms_var\\(--ease-luxe\\)_backwards\\]")
     .evaluateAll((els) => els.map((e) => getComputedStyle(e).transform));
   expect(transforms.length).toBe(5);
   for (const t of transforms) expect(["none", "matrix(1, 0, 0, 1, 0, 0)"]).toContain(t);
