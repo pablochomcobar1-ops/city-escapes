@@ -1,0 +1,15 @@
+# GitHub checks the packages every week and opens a pull request when an update
+# or security fix is out. Nothing merges by itself: you review and merge each one.
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 5
+    groups:
+      # Patch and minor updates arrive as one PR; major versions come separately.
+      minor-and-patch:
+        update-types: ["minor", "patch"]

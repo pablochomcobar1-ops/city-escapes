@@ -1,4 +1,4 @@
-import { validateBooking, isoDate, addDays, normalisePhone } from "@/lib/booking";
+import { validateBooking, isoDate, addDays, normalisePhone, looksLikeBot, MIN_FILL_MS } from "@/lib/booking";
 import { buildWhatsAppUrl, cleanWhatsAppNumber, bookingMessage } from "@/lib/whatsapp";
 
 const TODAY = new Date(2026, 10, 8); // 8 Nov 2026, local
@@ -68,5 +68,18 @@ describe("whatsapp", () => {
     expect(text).toContain("Residence: 4 BHK");
     expect(text).toContain("Time: Evening, 4 pm – 7 pm");
     expect(text.split("\n")).toHaveLength(5);
+  });
+});
+
+describe("looksLikeBot", () => {
+  const t0 = 1_000_000;
+  it("lets a person through", () => {
+    expect(looksLikeBot({ trap: "", startedAt: t0, now: t0 + MIN_FILL_MS + 1 })).toBe(false);
+  });
+  it("catches a filled trap field", () => {
+    expect(looksLikeBot({ trap: "http://spam.example", startedAt: t0, now: t0 + 60_000 })).toBe(true);
+  });
+  it("catches an instant submit", () => {
+    expect(looksLikeBot({ trap: "", startedAt: t0, now: t0 + 300 })).toBe(true);
   });
 });

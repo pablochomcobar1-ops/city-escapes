@@ -79,3 +79,15 @@ export function formatVisitDate(iso: string): string {
   const [y, m, d] = iso.split("-").map(Number);
   return new Date(y, m - 1, d).toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" });
 }
+
+/** Real people take longer than this to fill five fields. */
+export const MIN_FILL_MS = 2500;
+
+/**
+ * Spam guard: bots fill every field (including the hidden "website" trap)
+ * and submit instantly. Treat either sign as a bot. When a backend is wired up,
+ * run this check on the server too; a browser-only check can be skipped.
+ */
+export function looksLikeBot({ trap, startedAt, now }: { trap: string; startedAt: number; now: number }): boolean {
+  return trap.trim() !== "" || now - startedAt < MIN_FILL_MS;
+}

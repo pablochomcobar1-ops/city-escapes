@@ -8,6 +8,7 @@ import {
   addDays,
   formatVisitDate,
   isoDate,
+  looksLikeBot,
   validateBooking,
   type Booking,
   type BookingField,
@@ -93,6 +94,8 @@ export function BookingForm() {
   const [done, setDone] = useState<Booking | null>(null);
   const form = useRef<HTMLFormElement>(null);
   const successHeading = useRef<HTMLHeadingElement>(null);
+  const trap = useRef<HTMLInputElement>(null);
+  const startedAt = useRef(0);
   const ids = { name: useId(), phone: useId(), day: useId() };
 
   const today = new Date();
@@ -101,6 +104,7 @@ export function BookingForm() {
 
   // "Visit a 4 BHK" links arrive as /contact?flat=4bhk
   useEffect(() => {
+    startedAt.current = Date.now();
     const flat = new URLSearchParams(window.location.search).get("flat");
     if (flat && flat in FLATS) setV((s) => ({ ...s, flat: flat as Flat }));
   }, []);
@@ -124,7 +128,12 @@ export function BookingForm() {
       return;
     }
     setErrors({});
-    setDone(r.data); // Concept site: nothing is sent anywhere.
+    const bot = looksLikeBot({ trap: trap.current?.value ?? "", startedAt: startedAt.current, now: Date.now() });
+    if (!bot) {
+      // Concept site: nothing is sent anywhere. A real build would POST r.data to the server here.
+    }
+    // Bots see the same thank-you screen, so they can't tell they were caught.
+    setDone(r.data);
   };
 
   if (done) {
@@ -168,6 +177,13 @@ export function BookingForm() {
 
   return (
     <form ref={form} onSubmit={submit} noValidate aria-label="Book a site visit" className="space-y-10">
+      {/* Spam trap: hidden from people and screen readers; bots fill it in. */}
+      <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+        <label>
+          Website
+          <input ref={trap} type="text" name="website" tabIndex={-1} autoComplete="off" defaultValue="" />
+        </label>
+      </div>
       <div className="grid gap-10 sm:grid-cols-2">
         <div>
           <label htmlFor={ids.name} className="text-caption02 uppercase tracking-[0.18em] text-foreground-subtle">
