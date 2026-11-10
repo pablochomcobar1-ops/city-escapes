@@ -36,18 +36,25 @@ export function Towers() {
 
   const isNight = theme === "night";
 
-  // Reveal the stack only once every layer is decoded, so a night visitor never sees
-  // the day photo flash underneath while the night photo is still decoding.
-  const [decoded, setDecoded] = useState(0);
-  const ready = decoded >= 3;
+  // Reveal the stack once the layers this theme shows are decoded, so a night visitor never
+  // sees the day photo flash underneath while the night photo is still decoding.
+  // Day only needs the day photo: the hidden night layer is lazy and never loads by day,
+  // so waiting for it left day visitors staring at a blank frame until the safety net.
+  const [decoded, setDecoded] = useState<string[]>([]);
+  const [timedOut, setTimedOut] = useState(false);
+  const needed = isNight ? ["day", "bluehour", "night"] : ["day"];
+  const [ready, setReady] = useState(false);
+  // Once shown, stay shown: switching day → night must not fade the frame out again.
+  if (!ready && (timedOut || needed.every((l) => decoded.includes(l)))) setReady(true);
   const onLayerLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const img = e.currentTarget;
+    const layer = img.dataset.layer ?? "";
     (img.decode?.() ?? Promise.resolve())
       .catch(() => {})
-      .finally(() => setDecoded((n) => n + 1));
+      .finally(() => setDecoded((d) => (d.includes(layer) ? d : [...d, layer])));
   };
   useEffect(() => {
-    const t = setTimeout(() => setDecoded(3), 3000); // safety net: never stay hidden
+    const t = setTimeout(() => setTimedOut(true), 3000); // safety net: never stay hidden
     return () => clearTimeout(t);
   }, []);
 

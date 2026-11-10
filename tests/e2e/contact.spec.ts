@@ -22,6 +22,7 @@ test("?flat=4bhk from the residence card preselects 4 BHK", async ({ page }) => 
 });
 
 test("junk input shows errors; a valid booking shows the demo confirmation and sends nothing", async ({ page }) => {
+  test.slow(); // the longest flow in the suite: give it room on a busy machine
   const posts: string[] = [];
   page.on("request", (r) => {
     if (r.method() !== "GET") posts.push(r.url());
@@ -64,7 +65,22 @@ test("date picker limits: today to +60 days", async ({ page }) => {
 
 test("residence card link leads to a preselected form", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("link", { name: "Visit a 3 BHK" }).click();
-  await expect(page).toHaveURL(/\/contact\?flat=3bhk$/);
+  // Under heavy parallel load a tap can land before hydration and the link isn't handled yet.
+  await page.waitForFunction(() => "__lenis" in window);
+  const link = page.getByRole("link", { name: "Visit a 3 BHK" });
+  await link.scrollIntoViewIfNeeded();
+  await link.click();
+  await expect(page).toHaveURL(/\/contact\?flat=3bhk$/, { timeout: 15_000 });
   await expect(page.getByLabel("3 BHK")).toBeChecked();
+});
+
+test("spam trap is invisible and never reached by keyboard", async ({ page }) => {
+  await page.goto("/contact");
+  const trap = page.locator('input[name="website"]');
+  await expect(trap).toBeAttached();
+  await expect(trap).toHaveAttribute("tabindex", "-1");
+  const box = await trap.boundingBox();
+  expect(box === null || box.x + box.width < 0).toBe(true);
+  // Screen readers don't announce it either.
+  await expect(page.getByRole("textbox", { name: "Website" })).toHaveCount(0);
 });

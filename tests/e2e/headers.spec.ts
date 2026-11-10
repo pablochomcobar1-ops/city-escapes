@@ -63,8 +63,10 @@ test.describe("no page breaks the Content-Security-Policy", () => {
     test.skip(isMobile, "3D tests run on desktop only");
     const violations = await watchCsp(page);
     await page.goto("/tour");
-    await expect(page.locator("canvas[data-tour]")).toBeAttached({ timeout: 30_000 });
-    await expect(page.getByRole("button", { name: /Click to step inside/ })).toBeVisible({ timeout: 30_000 });
+    // Browsers without WebGL (e.g. headless Firefox) get the photo fallback instead: check whichever loads.
+    const tour = page.getByRole("button", { name: /Click to step inside/ });
+    const fallback = page.getByText("Your browser can't show the 3D walkthrough");
+    await expect(tour.or(fallback)).toBeVisible({ timeout: 30_000 });
     await page.waitForTimeout(500);
     expect(violations).toEqual([]);
   });
@@ -91,6 +93,15 @@ test.describe("404 and crawler files", () => {
     expect(robots).toContain("/sitemap.xml");
     const sitemap = await (await request.get("/sitemap.xml")).text();
     for (const p of ["/tour", "/about", "/contact"]) expect(sitemap).toContain(`${p}</loc>`);
+  });
+
+  test("favicon and home-screen icon exist", async ({ page }) => {
+    await page.goto("/");
+    for (const sel of ['link[rel="icon"][type="image/svg+xml"]', 'link[rel="apple-touch-icon"]']) {
+      const href = await page.locator(sel).getAttribute("href");
+      expect((await page.request.get(href!)).status(), sel).toBe(200);
+    }
+    expect((await page.request.get("/favicon.ico")).status()).toBe(200);
   });
 
   test("share preview tags point at the image", async ({ page }) => {

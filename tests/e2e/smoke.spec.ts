@@ -8,13 +8,14 @@ test("home loads with night tokens, and day tokens switch on data-theme", async 
     page.evaluate(() => getComputedStyle(document.documentElement).backgroundColor);
 
   await expect(page.locator("html")).toHaveAttribute("data-theme", "night");
-  expect(await bg()).toBe("rgb(14, 13, 11)");
+  // The page fades in, so wait for the final colour.
+  await expect.poll(bg).toBe("rgb(14, 13, 11)");
 
   await page.evaluate(() => {
     document.documentElement.dataset.theme = "day";
     document.documentElement.style.transition = "none";
   });
-  expect(await bg()).toBe("rgb(243, 237, 227)");
+  await expect.poll(bg).toBe("rgb(243, 237, 227)");
 });
 
 test("display font and type scale are applied", async ({ page }) => {

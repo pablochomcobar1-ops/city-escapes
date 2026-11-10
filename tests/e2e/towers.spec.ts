@@ -95,3 +95,15 @@ test("reduced motion: no zoom", async ({ browser }) => {
   expect(transform).toBe("none");
   await ctx.close();
 });
+
+test("day visitors see the towers straight away (regression: blank until a 3 s timeout)", async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem("ce-theme", "day"));
+  await page.goto("/");
+  await page.getByText("Two towers.").scrollIntoViewIfNeeded();
+  // Well under the 3 s safety net.
+  await expect(page.locator('[data-zoom][data-ready="true"]')).toBeAttached({ timeout: 2000 });
+  // Switching to night keeps the frame visible while the night photo loads.
+  await page.getByRole("button", { name: "See it at night" }).click();
+  await expect(page.locator('[data-zoom][data-ready="true"]')).toBeAttached();
+  await expect(page.locator('img[data-layer="night"]')).toHaveJSProperty("complete", true, { timeout: 10_000 });
+});

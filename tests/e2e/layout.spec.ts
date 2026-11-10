@@ -1,12 +1,17 @@
 import { test, expect } from "@playwright/test";
 
-test("nav hides on scroll down and returns on scroll up", async ({ page }) => {
+test("nav hides on scroll down and returns on scroll up", async ({ page, browserName, isMobile }) => {
+  // Mobile Safari has no mouse wheel; a touch scroll there is a native scroll.
+  const scroll = (dy: number) =>
+    browserName === "webkit" && isMobile
+      ? page.evaluate((d) => window.scrollBy(0, d), dy)
+      : page.mouse.wheel(0, dy);
   await page.goto("/");
   // Wait until the app is interactive (Lenis starts after hydration), or the
   // scroll can happen before the nav's listener exists.
   await page.waitForFunction(() => "__lenis" in window);
   const header = page.locator("header");
-  await page.mouse.wheel(0, 1200);
+  await scroll(1200);
   await expect(header).toHaveClass(/-translate-y-full/);
   // Lenis eases toward its target; let the downward glide finish before reversing.
   await page.waitForFunction(() => {
@@ -15,7 +20,7 @@ test("nav hides on scroll down and returns on scroll up", async ({ page }) => {
     w.__y = window.scrollY;
     return same;
   }, null, { polling: 250 });
-  await page.mouse.wheel(0, -300);
+  await scroll(-300);
   await expect(header).not.toHaveClass(/-translate-y-full/);
 });
 

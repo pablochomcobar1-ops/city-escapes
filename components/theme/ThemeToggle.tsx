@@ -5,14 +5,15 @@ import { useTheme } from "./useTheme";
 export function ThemeToggle({ className = "" }: { className?: string }) {
   const { theme, toggle } = useTheme();
   const isNight = theme === "night";
-  const label = isNight ? "Switch to day" : "Switch to night";
+  // The spoken name starts with the visible word, so voice control ("click Night") works.
+  // It already says the current state, so there is no aria-pressed as well (that would say it twice).
+  const label = isNight ? "Night mode, switch to day" : "Day mode, switch to night";
 
   return (
     <button
       type="button"
       onClick={toggle}
       aria-label={label}
-      aria-pressed={isNight}
       title={label}
       className={[
         "group relative inline-flex h-10 items-center gap-2 rounded-pill",

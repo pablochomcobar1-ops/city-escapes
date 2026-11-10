@@ -17,6 +17,12 @@ function usePortrait(): boolean {
   );
 }
 
+const noop = () => () => {};
+/** False during server render and hydration, true once running in the browser. */
+function useHydrated(): boolean {
+  return useSyncExternalStore(noop, () => true, () => false);
+}
+
 function Layer({ src, active, inView }: { src: string; active: boolean; inView: boolean }) {
   const ref = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
@@ -63,12 +69,15 @@ export function HeroVideo() {
   const { theme } = useTheme();
   const portrait = usePortrait();
   const reduced = useReducedMotion();
+  const hydrated = useHydrated();
   const box = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(true);
   const [seen, setSeen] = useState<string[]>([]);
   const active = heroSources(theme, portrait).mp4;
 
-  if (!reduced && !seen.includes(active)) setSeen([...seen, active]);
+  // Wait for hydration: before it, theme and screen shape are only guesses, and a guessed
+  // clip would start downloading (phones were fetching the 2.4 MB landscape clip for nothing).
+  if (hydrated && !reduced && !seen.includes(active)) setSeen([...seen, active]);
 
   useEffect(() => {
     const el = box.current;
